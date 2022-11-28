@@ -43,9 +43,43 @@ To find the largest coin value within the range of the current target, we will n
 
 ### Recursion (with Memoization)
 
-The recursive algorithm for MC uses a table to store returned values to be reused in  
+The recursive algorithm for MC uses a table to store and reuse returned values (memoization). To be more specific here is a demonstration of a non-memoized purely recursive algorithm:
+
+```
+input: target=8, coins_val=[1,4,5]
+output: 2 (2 fours)
+```
+<img width="740" alt="Screen Shot 2022-11-27 at 19 22 19" src="https://user-images.githubusercontent.com/113309314/204168010-110b2e35-3a36-455f-97fe-f97b553bb085.png">
+Fig.1: Recursion tree for non-memoized aproach </br></br>
+
+Note that in Fig.1, the node 4 in the left bottom would have more nodes, if not for  the limit in how many items I could add in free version of LucidChart. Here we can see that a lot of the same nodes exist, for example 3. For a subtarget of 3, a coin of value 1 can be used three times. This same recursive call is being done three different times, as demonstrated in Fig.1. Fig.2 shows a recursive tree of the memoized version:
+
+<img width="652" alt="Screen Shot 2022-11-27 at 20 07 02" src="https://user-images.githubusercontent.com/113309314/204171084-ea28a134-a50a-4d9a-b18e-21017d2290bb.png">
+Fig.2: Recursing tree for memoized approach </br></br>
+
+In Fig.2, we can see that there is less recursive call than Fig.1. This is because the optimal solution for the subtargets is being memoized (stored in a table), so that when the same value is encountered later in its execution it can refer back to the table. Here is a brief pseudocode: 
+
+```
+func divideAndConquer(target, table, coins_val)
+  if target == 0
+    return 0
+  else if table contains target
+    return table[target]
+  
+  min = infinity
+  for i from 0 to coins_val.length
+    sol = divideAndConquer(target-i, table, coins_val, c+1)
+    if (table[target] does not contain value) or (sol < min)
+      min = sol + 1
+
+   table[target] = sol
+   
+   return min
+```
 
 ### Dynamic Programming
+
+
 
 ## Development 
 ## Evaluation
