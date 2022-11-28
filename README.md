@@ -145,19 +145,7 @@ while (coins[i] > val) {
 ```
 This was working almost flawlessly until I found a case where it did not work. The reason this was happening was because whenever `coins[last_index] > val` was called, `last_index + 1` is out of range. To solve this problem, I added one condition, `i < n-1` in the while loop to prevent from indexing out of range. This solved the error, and `int greedy` now works well. </br>
 
-One important thing to note about this greedy algorithm for MC, is that it doesn't necessarily give us an optimal solution. Here is an example: 
-```
-input: target = 8, coins_val=[5, 4, 1]
 
-demonstration: 
-1. new_target = 8-5 = 3,  coin_count = 1
-2. new_target = 3-1 = 2,  coin_count = 2 
-3. new_target = 2-1 = 1,  coin_count = 3
-3. new_target = 1-1 = 0,  coin_count = 4
-
-output: 4, sol=[5, 1, 1, 1]
-```
-The output when processing the input above is a 4
 
 ### Divide and Conquer with Memoization 
 ```c
@@ -228,3 +216,18 @@ int dyn_prog(int val, int* coins, int n, int* table, int* sol) {
 ```
 
 ## Evaluation
+
+One important thing to note about this greedy algorithm for MC, is that it doesn't necessarily give us an optimal solution. Here is an example: 
+```
+input: target = 8, coins_val=[5, 4, 1]
+
+demonstration: 
+1. new_target = 8-5 = 3,  coin_count = 1
+2. new_target = 3-1 = 2,  coin_count = 2 
+3. new_target = 2-1 = 1,  coin_count = 3
+3. new_target = 1-1 = 0,  coin_count = 4
+
+output: 4, sol=[5, 1, 1, 1]
+```
+
+The output of the greedy algorithm, when processing the input above is a 4, however the optimal output in this case is 2, where `sol=[4, 4]`. 
