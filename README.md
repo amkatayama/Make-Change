@@ -13,11 +13,11 @@ The main problem for this project is making change for a given amount with the f
 Example inputs and outputs: 
 
 **Example 1:**
-> input1: target = 10, coins_val = [1, 5] </br>
+> input1: target = 10, coins_val = [5, 1] </br>
 > output1: 2 (2 nickels make up 10)
 
 **Example 2:**
-> input2: target = 35, coins_val = [1, 5, 10] </br>
+> input2: target = 35, coins_val = [10, 5, 1] </br>
 > output2: 4 (3 dimes and 1 nickel)
 
 The coin values can be passed a non-coin value (e.g., 4, 17), and the program should still return the optimal number of coins that can be used to make change for target amount. 
@@ -46,7 +46,7 @@ To find the largest coin value within the range of the current target, we will n
 The recursive algorithm for MC uses a table to store and reuse returned values (memoization). To be more specific here is a demonstration of a non-memoized purely recursive algorithm:
 
 ```
-input: target=8, coins_val=[1,4,5]
+input: target=8, coins_val=[5, 4, 1]
 output: 2 (2 fours)
 ```
 <img width="740" alt="Screen Shot 2022-11-27 at 19 22 19" src="https://user-images.githubusercontent.com/113309314/204168010-110b2e35-3a36-455f-97fe-f97b553bb085.png">
@@ -81,7 +81,7 @@ func divideAndConquer(target, table, coins_val)
 
 Dynamic Programming is also known as the bottom-up approach, and in MC, we are going to build a table containing the optimal solutions of subproblems. 
 ```
-input: target=8, coins_val=[1,4,5]
+input: target=8, coins_val=[5, 4, 1]
 table: 
 i   count 
 1     1
@@ -143,9 +143,21 @@ while (coins[i] > val) {
   i++;
 }
 ```
-This was working almost flawlessly until I found a case where it did not work. The reason this was happening was because whenever `coins[last_index] > val`
+This was working almost flawlessly until I found a case where it did not work. The reason this was happening was because whenever `coins[last_index] > val` was called, `last_index + 1` is out of range. To solve this problem, I added one condition, `i < n-1` in the while loop to prevent from indexing out of range. This solved the error, and `int greedy` now works well. </br>
 
-The condition `i < n-1` in the while loop is to prevent from indexing out of range. 
+One important thing to note about this greedy algorithm for MC, is that it doesn't necessarily give us an optimal solution. Here is an example: 
+```
+input: target = 8, coins_val=[5, 4, 1]
+
+demonstration: 
+1. new_target = 8-5 = 3,  coin_count = 1
+2. new_target = 3-1 = 2,  coin_count = 2 
+3. new_target = 2-1 = 1,  coin_count = 3
+3. new_target = 1-1 = 0,  coin_count = 4
+
+output: 4, sol=[5, 1, 1, 1]
+```
+The output when processing the input above is a 4
 
 ### Divide and Conquer with Memoization 
 ```c
