@@ -79,7 +79,140 @@ func divideAndConquer(target, table, coins_val)
 
 ### Dynamic Programming
 
+Dynamic Programming is also known as the bottom-up approach, and in MC, we are going to build a table containing the optimal solutions of subproblems. 
+```
+input: target=8, coins_val=[1,4,5]
+table: 
+i   count 
+1     1
+2     2
+3     3
+4     1
+5     1
+6     2
+7     3
+8     2
+output: 2 (2 fours)
+```
+In this is example, it first calculates the optimal solution if the target was 1. Then it uses this value, to calculate the optimal solution of target 2. However, when the optimal solution is smaller than the one derived from previous solution, it updates the table value to the optimal solution. By the time it returns the solution for the actual target, the table would contain an optimal solution for every subtarget value smaller than the actual target value. 
+Here is the pseudocode for this algorithm:
+```
+table.length = target 
+for i from 0 to table.length 
+  for j in coin_vals 
+    if j < i
+      break 
+    else if j == coin_vals
+      table[i] = 1  
+    else 
+      if (table[i] has no sol) or (1 + table[i-j] < ]table[i])
+        table[i] = 1 + table[i-j]
 
+return table[target]
+```
 
 ## Development 
+### Greedy Algorithm 
+
+```c
+int greedy(int val, int* coins, int n) {
+
+    int score = 0;
+    int i = 0;
+
+    while (val > 0) {
+        // making sure i never gets out of index
+        while (i < n-1 && coins[i] > val) {
+            i++;
+        }
+        val -= coins[i];
+        score += 1;
+    }
+    // score is returned only if exact change can be made
+    if (val == 0) {
+        return score;
+    }
+    return -1;
+}
+```
+
+The greedy algorithm turned out to work almost flawlessly based on the pseudocode above. In the while loop inside the outer loop, I am checking for every coin value that is smaller than the target. If the coin value is bigger than the target, then that coin cannot be used in the first place, hence we `i++`, and do nothing else. In my previous version of this algorothm, I had my inner while loop as below:
+```c
+// making sure i never gets out of index
+while (coins[i] > val) {
+  i++;
+}
+```
+This was working almost flawlessly until I found a case where it did not work. The reason this was happening was because whenever `coins[last_index] > val`
+
+The condition `i < n-1` in the while loop is to prevent from indexing out of range. 
+
+### Divide and Conquer with Memoization 
+```c
+int divide_and_conquer(int val, int* coins, int n, int* table) {
+
+
+    if (val == 0) {
+        return 0;
+    }
+    // memoization
+    if (table[val] != -1) {
+        return table[val];
+    }
+    int min = -1;
+    for (int i = 0; i < n; i++) {
+        if (coins[i] > val) {
+            continue;  // if coin value is bigger continue to the next coin value in array
+        }
+        int r = divide_and_conquer(val-coins[i], coins, n, table);
+        // update m if there is not yet a sol or this is a better sol
+        // check if the last recursive call returned a sol
+        if (r != -1) {
+            if (min == -1 || (min != -1 && r < min)) {
+                min = r+1;
+            }
+        }
+    }
+
+    table[val] = min;
+    return min;
+}
+```
+
+### Dynamic Programming 
+
+```c
+int dyn_prog(int val, int* coins, int n, int* table, int* sol) {
+
+    for (int i = 1; i < val+1; i++) {
+        // looking through coins from smallest
+        for (int j = n-1; j >= 0; j--) {
+            // break if coin is bigger than the value
+            if (i == coins[j]) {
+                table[i] = 1;
+                sol[i] = coins[j];
+                break;
+            } else if (coins[j] > i) {
+                break;
+            }
+
+            // update table if no sol is found or
+            if (table[i] == -1 || (table[i] != -1 && (1 + table[i-coins[j]] < table[i])))  {
+                if (table[i-coins[j]] == -1) {
+                    continue;
+                }
+                table[i] = 1 + table[i-coins[j]];
+                // update solVal when ever table[i] is also updated
+                // if it doesn't use that coin then get the largest used coin value
+                sol[i] = sol[i-coins[j]];
+            }
+
+
+        }
+    }
+
+    return table[val];
+}
+```
+
 ## Evaluation
