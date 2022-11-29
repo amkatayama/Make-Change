@@ -143,7 +143,7 @@ while (coins[i] > val) {
   i++;
 }
 ```
-This was working almost flawlessly until I found a case where it did not work. The reason this was happening was because whenever `coins[last_index] > val` was called, `last_index + 1` is out of range. To solve this problem, I added one condition, `i < n-1` in the while loop to prevent from indexing out of range. This solved the error, and `int greedy` now works well. </br>
+This was working almost flawlessly until I found a case where it did not work. The reason this was happening was because whenever `coins[last_index] > val` was called, `last_index + 1` is out of range. To solve this problem, I added one condition, `i < n-1` in the while loop to prevent from indexing out of range. This solved the error, and `int greedy` now works well. 
 
 
 
@@ -178,6 +178,17 @@ int divide_and_conquer(int val, int* coins, int n, int* table) {
     return min;
 }
 ```
+
+The two base cases are: 
+- when the same amount of sum of coin values has been reduced from the target
+- when the table for the target value already contains a solution 
+
+Whenever it fits in neither of the base cases, it finds a solution for the smaller targets and stores the value in the table. However, when adding a value at `table[i]`, where i is the target value at that recursive call, it should run the following check: 
+```c
+if (r != -1) {
+  if (min == -1 || (min != -1 && r < min)) { //do }}
+```
+Before any of the algorithms are ran, the table is initialized in the `int main` function, with `table.length = target` and `table[each index] = -1`. When a table at index i contains a -1, this means that there has been no solution found yet, for a target value of i. In the first condition `if (r != -1)`, checks whether if the last recursive call found a solution or not. If the last recursive call did not find a solution, then neither will the successive recursive calls. However, if the previous recursive call returned a solution, then we move on to the next condition `if (min == -1 || (min != -1 && r < min))`. This checks if the current value does not have a solution, or if it has one but the current solution is a better one than the previously obtained. If both of these conditions are true, then we update the solution and move on the next recursive call.
 
 ### Dynamic Programming 
 
@@ -216,6 +227,8 @@ int dyn_prog(int val, int* coins, int n, int* table, int* sol) {
 ```
 
 ## Evaluation
+
+### Greedy Algorithm
 
 One important thing to note about this greedy algorithm for MC, is that it doesn't necessarily give us an optimal solution. Here is an example: 
 ```
