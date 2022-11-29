@@ -1,5 +1,5 @@
 // Created by Arata Katayama 11/10/2022
-// Collaborators: Professor and 3 other peers (Hidden for confidentiality)
+// Collaborators: Professor and 3 other peers
 
 #include <stdio.h>
 #include <limits.h>
