@@ -257,9 +257,31 @@ The time complexity for this algorithm is O(n*k), where n is the target value, a
 > Time Complexity: *O(n)* </br>
 > Space Complexity: *O(n)*
 
-Without memoization, the divide and conquer method will take too long, and at some point it ends being stack overflowed. 
+Without memoization, the divide and conquer method will take too long, and at some point it ends being stack overflowed. For example for an input such as `target=3588, coins_val=[100, 25, 5, 1]`, the non-memoized approach would not work. 
+
+With memoization, the time complexity of `int divide_and_conquer` becomes O(n). To be more specific it is O(k(n/j)), where k is the length of coins_val, n is the target value, and j is the value of the coin being used. The recursive call `divide_and_conquer(val-coins[i], coins, n, table)` runs n/coins[i] times in general, however at most n times, considering that the smallest possible coin value is 1. The outer loop `for (int i = 0; i < n; i++)` loops through the coins_val, which means it runs k times. As mentioned previously, k is conventionally a finite number which can be treated as a constant. Hence, the time complexity reduces to O(n), which is the same as the greedy algorithm. Space complexity on the other hand is worse than the greedy algorithm. In memoized divide and conquer method we are keeping the solutions for every subtargets in a table. This table does not necessarily have a length of n, however worst case, the length is n. Thus the space complexity is O(n).
 
 ### Dynamic Programming Algorithm
 
 > Time Complexity: *O(n)* </br>
 > Space Complexity: *O(n)*
+
+Dynamic programming approach, similar to divide and conquer approach, always gives out a optimal solution. For example: 
+```
+input: target = 8, coins_val=[5, 4, 1]
+
+table: 
+i    val
+1     1
+2     2
+3     3
+4     1
+5     1
+6     2
+7     3
+8     2
+
+output: 2, sol=[4, 4]
+```
+
+All the subtargets leading to the final target is going to contain an optimal solution, and so it is guaranteed to have an optimal solution once it reaches the final target. The time complexity of this algorithm is again, O(n) for similar reason with the other two algorithm. It uses a nested for loop, however the inner loop only runs a finite time, hence O(n). The space complexity of this algorithm is O(n) because it requires a table of length n, and another data structure named `sol`, which also has a length of n. `sol` is used to build the solution containing all the used coin values. With both of these data stored, the precise space complexity is O(2n), which is the same as O(n).
