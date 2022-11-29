@@ -257,6 +257,8 @@ The time complexity for this algorithm is O(n*k), where n is the target value, a
 > Time Complexity: *O(n)* </br>
 > Space Complexity: *O(n)*
 
+Without memoization, the divide and conquer method will take too long, and at some point it ends being stack overflowed. 
+
 ### Dynamic Programming Algorithm
 
 > Time Complexity: *O(n)* </br>
