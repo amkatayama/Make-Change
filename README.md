@@ -213,22 +213,27 @@ int dyn_prog(int val, int* coins, int n, int* table, int* sol) {
                     continue;
                 }
                 table[i] = 1 + table[i-coins[j]];
-                // update solVal when ever table[i] is also updated
-                // if it doesn't use that coin then get the largest used coin value
-                sol[i] = sol[i-coins[j]];
             }
-
-
         }
     }
-
     return table[val];
 }
 ```
 
+Similar to the divide and conquer solution, in this dynamic programming solution, we are also going to use the same table initialized in the same way. Some implementation decisions I made: 
+
+1. Looking through the coins from smallest to largest
+> The input array coins_val contains the values in reverse-sorted order (from biggest to smallest). If I iterated through the array normally from j=0 to j=len(coins), there is higher chance that we will be iterating through coin values that are bigger than the current target. Although skipping to the next iteration does not take a lot of time, it felt more intuitive for me to iterate through the coins array from j=len(coins) to j=0, because in this way we don't even have to go through unnecessary coin values. 
+
+2. Finding the optimal solution for each target
+> Same idea with recursive approach, where we are building our answers based on previous answers. The implementation is very similar, as we are checking if the `table[i-coins[j]]`, which is the previous subproblem, contains a solution. If it does then, `table[i]` should not update it's solution based on `table[i-coins[j]]` unless it has it's own independent solution. Furthermore, if `table[i]` does not already have a solution, or if it finds a better solution on the way, then the program would update the value at `table[i]`.
+
 ## Evaluation
 
 ### Greedy Algorithm
+
+> Time Complexity: *O(n)* </br>
+> Space Complexity: *O(1)*
 
 One important thing to note about this greedy algorithm for MC, is that it doesn't necessarily give us an optimal solution. Here is an example: 
 ```
@@ -243,4 +248,16 @@ demonstration:
 output: 4, sol=[5, 1, 1, 1]
 ```
 
-The output of the greedy algorithm, when processing the input above is a 4, however the optimal output in this case is 2, where `sol=[4, 4]`. 
+The output of the greedy algorithm, when processing the input above is a 4, however the optimal output in this case is 2, where `sol=[4, 4]`. This algorithm takes whatever the biggest coin value it can fit in the current target, regardless of whether it can have a better solution or not. This is the reason why for some cases, this doesn't give us the optimal solution. </br>
+
+The time complexity for this algorithm is O(n*k), where n is the target value, and k is the length of the coins_val array. In this case, k is always going to be a finite number, so this can be treated as a constant. In result, the time complexity becomes O(kn), where k is a coefficient on n, which reduces to O(n). Furthermore the space complexity is O(1), because we are not storing anything except for the 2 variables `score` and `i`. 
+
+### Divide and Conquer Algorithm
+
+> Time Complexity: *O(n)* </br>
+> Space Complexity: *O(n)*
+
+### Dynamic Programming Algorithm
+
+> Time Complexity: *O(n)* </br>
+> Space Complexity: *O(n)*
